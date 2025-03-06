@@ -1,31 +1,19 @@
-import React, { useState, useEffect } from "react";
-import {
-  Text,
-  TextInput,
-  Button,
-  View,
-  StyleSheet,
-  Platform,
-} from "react-native";
-import { auth, db } from "../../firebaseConfig";
-import {
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithCredential,
-} from "firebase/auth";
+import React, { useState, useContext } from "react";
+import { StyleSheet } from "react-native";
+import { auth } from "../../firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "expo-router";
 import { AuthContext } from "../../context/AuthContext";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import * as WebBrowser from "expo-web-browser";
-import * as AuthSession from "expo-auth-session";
-
-WebBrowser.maybeCompleteAuthSession();
+import ContainerComponent from "../../components/ContainerComponent";
+import InputComponent from "../../components/InputComponent";
+import ButtonComponent from "../../components/ButtonComponent";
+import TitleComponent from "../../components/TitleComponent";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-  const { setUser, user } = React.useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
 
   /*   const discovery = AuthSession.useAutoDiscovery("https://accounts.google.com"); */
 
@@ -124,61 +112,33 @@ export default function Login() {
   }; */
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Sign in</Text>
-      <TextInput
-        style={styles.input}
+    <ContainerComponent>
+      <TitleComponent>Sign in</TitleComponent>
+      <InputComponent
         placeholder="Email"
         keyboardType="email-address"
         autoCapitalize="none"
         onChangeText={setEmail}
       />
-      <TextInput
-        style={styles.input}
+      <InputComponent
         placeholder="Password"
         secureTextEntry
         onChangeText={setPassword}
       />
-      <Button title="Sign in" onPress={handleSubmit} />
+      <ButtonComponent title="Sign in" onPress={handleSubmit} />
       {/* <Button
         disabled={Platform.OS !== "web" && !request}
         title="Sign in with Google"
         onPress={handleGoogleLogin}
       /> */}
-      <Button
+      <ButtonComponent
         title="Forgot password?"
         onPress={() => router.push("/(auth)/resetPassword")}
       />
-      <Button
+      <ButtonComponent
         title="Register"
         onPress={() => router.push("/(auth)/register")}
       />
-    </View>
+    </ContainerComponent>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#f5f5f5",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  input: {
-    width: "100%",
-    maxWidth: 300,
-    height: 50,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    marginBottom: 15,
-    backgroundColor: "#fff",
-  },
-});
