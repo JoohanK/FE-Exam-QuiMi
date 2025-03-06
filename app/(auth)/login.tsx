@@ -146,6 +146,10 @@ export default function Login() {
         onPress={handleGoogleLogin}
       /> */}
       <Button
+        title="Forgot password?"
+        onPress={() => router.push("/(auth)/resetPassword")}
+      />
+      <Button
         title="Register"
         onPress={() => router.push("/(auth)/register")}
       />
