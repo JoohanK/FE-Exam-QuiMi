@@ -1,14 +1,15 @@
-import { Router, Slot, useRouter } from "expo-router";
-import { useContext, useEffect, useState } from "react";
-
-import { Redirect } from "expo-router";
-import { Text } from "react-native";
+import React, { useEffect } from "react";
+import { Slot } from "expo-router";
 import { AuthProvider } from "../context/AuthContext";
+import KeyboardDismissWrapper from "../components/KeyboardDismissWrapper";
+import { StatusBar, Appearance } from "react-native";
 
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <Slot />
+      <KeyboardDismissWrapper>
+        <Slot />
+      </KeyboardDismissWrapper>
     </AuthProvider>
   );
 }

@@ -12,16 +12,22 @@ import {
 interface InputComponentProps extends Omit<TextInputProps, "style"> {
   style?: StyleProp<TextStyle>;
   containerStyle?: ViewStyle;
+  placeholderTextColor?: string; // Lägg till placeholderTextColor prop
 }
 
 const InputComponent: React.FC<InputComponentProps> = ({
   style,
   containerStyle,
+  placeholderTextColor = "#ccc", // Standardvärde för placeholderTextColor
   ...props
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
-      <TextInput style={[styles.input, style]} {...props} />
+      <TextInput
+        style={[styles.input, style]}
+        placeholderTextColor={placeholderTextColor}
+        {...props}
+      />
     </View>
   );
 };
