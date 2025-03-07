@@ -5,6 +5,9 @@ import KeyboardDismissWrapper from "../components/KeyboardDismissWrapper";
 import { StatusBar, Appearance } from "react-native";
 
 export default function RootLayout() {
+  StatusBar.setBarStyle("dark-content"); // Force light content
+  Appearance.setColorScheme("light"); // Force dark mode (optional)
+
   return (
     <AuthProvider>
       <KeyboardDismissWrapper>

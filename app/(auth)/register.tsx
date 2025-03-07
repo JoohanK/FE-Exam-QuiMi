@@ -26,7 +26,7 @@ export default function Register() {
       const user = userCredential.user;
 
       await setDoc(doc(db, "users", user.uid), {
-        username: user.email,
+        displayName: user.email,
         email: user.email,
         profilePicture: "",
         createdAt: new Date(),

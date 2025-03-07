@@ -15,31 +15,17 @@ export default function Index() {
       setUser(authUser);
       if (!authUser) {
         router.replace("/login");
+      } else {
+        router.replace("/menu/play");
       }
     });
 
     return unsubscribe;
   }, []);
 
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      setUser(null); // Uppdatera AuthContext efter utloggning
-      router.replace("/login");
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
-  };
-
-  if (!user) {
-    return null; // Visa ingenting medan autentiseringstillståndet kontrolleras
-  }
-
   return (
     <View>
       <Text>hej</Text>
-      <Text>Signed in as: {user?.email || "Guest"}</Text>
-      <Button title="Sign out" onPress={handleSignOut} />
     </View>
   );
 }
