@@ -4,11 +4,20 @@ import { useRouter } from "expo-router";
 import { AuthContext } from "../../context/AuthContext";
 import { auth, db } from "../../firebaseConfig";
 import { signOut, updateProfile } from "firebase/auth"; // Import updateProfile
-import { setDoc, doc, updateDoc } from "firebase/firestore";
+import {
+  setDoc,
+  doc,
+  updateDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import ButtonComponent from "@/components/ButtonComponent";
 import ContainerComponent from "../../components/ContainerComponent";
 import InputComponent from "@/components/InputComponent";
 import TitleComponent from "@/components/TitleComponent";
+import EmojiPicker from "@/components/EmojiPicker";
 
 export default function Profile() {
   const { user, setUser } = useContext(AuthContext);
@@ -16,6 +25,7 @@ export default function Profile() {
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -23,17 +33,42 @@ export default function Profile() {
     }
   }, [user]);
 
+  const handleEmojiSelected = (emoji: string) => {
+    setSelectedEmoji(emoji);
+  };
+
   const handleSave = async () => {
     setLoading(true);
     setErrorMessage("");
     try {
       if (auth.currentUser) {
+        const lowercaseDisplayName = displayName.toLowerCase();
+        const usersRef = collection(db, "users");
+        const q = query(
+          usersRef,
+          where("displayNameLowercase", "==", lowercaseDisplayName)
+        );
+        const querySnapshot = await getDocs(q);
+
+        const displayNameExists =
+          !querySnapshot.empty &&
+          querySnapshot.docs[0].id !== auth.currentUser.uid;
+
+        if (displayNameExists) {
+          setErrorMessage("Name already exists");
+          setLoading(false);
+          return;
+        }
+
         await updateProfile(auth.currentUser, {
           displayName: displayName,
+          photoURL: selectedEmoji,
         });
 
         await updateDoc(doc(db, "users", auth.currentUser.uid), {
           displayName: displayName,
+          displayNameLowercase: lowercaseDisplayName,
+          photoURL: selectedEmoji,
         });
 
         const updatedUser = auth.currentUser;
@@ -75,6 +110,8 @@ export default function Profile() {
           value={displayName}
           onChangeText={setDisplayName}
         />
+        <EmojiPicker onEmojiSelected={handleEmojiSelected} />
+        {selectedEmoji && <Text style={{ fontSize: 70 }}>{selectedEmoji}</Text>}
         {loading ? (
           <ActivityIndicator size="large" />
         ) : (

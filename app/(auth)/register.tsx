@@ -28,7 +28,7 @@ export default function Register() {
       await setDoc(doc(db, "users", user.uid), {
         displayName: user.email,
         email: user.email,
-        profilePicture: "",
+        photoURL: "",
         createdAt: new Date(),
       });
 
